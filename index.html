@@ -1,353 +1,399 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My AI Assistant</title>
+<title>OpenAI AI Assistant</title>
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{
+ background:linear-gradient(135deg,#0f172a,#4338ca,#7c3aed);
+ height:100vh;display:flex;align-items:center;justify-content:center;padding:12px
 }
-
-body {
-    background: linear-gradient(135deg,#667eea,#764ba2);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
+.app{
+ width:100%;max-width:700px;height:95vh;background:#fff;
+ border-radius:20px;display:flex;flex-direction:column;overflow:hidden;
+ box-shadow:0 15px 50px #0005
 }
-
-.app {
-    width: 100%;
-    max-width: 650px;
-    height: 90vh;
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 40px #0004;
+header{
+ background:#171717;color:white;padding:18px;
+ display:flex;justify-content:space-between;align-items:center
 }
-
-header {
-    background: #4338ca;
-    color: white;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+header h2{font-size:21px}
+header small{color:#aaa}
+#clear{
+ background:#333;color:white;border:0;padding:10px;border-radius:8px;cursor:pointer
 }
-
-header h2 {
-    font-size: 22px;
+.keybox{padding:12px;background:#f2f2f2;display:flex;gap:7px}
+.keybox input{
+ flex:1;min-width:0;padding:11px;border:1px solid #ccc;border-radius:8px
 }
-
-header p {
-    font-size: 12px;
-    margin-top: 5px;
-    color: #ddd;
+.keybox button{
+ border:0;background:#444;color:white;padding:10px;border-radius:8px;cursor:pointer
 }
-
-.clear {
-    background: #ffffff22;
-    color: white;
-    border: 1px solid #ffffff55;
-    padding: 9px 12px;
-    border-radius: 8px;
-    cursor: pointer;
+#chat{
+ flex:1;overflow-y:auto;padding:16px;background:#f8fafc
 }
-
-.settings {
-    padding: 12px 15px;
-    background: #f3f4f6;
-    display: flex;
-    gap: 8px;
+.msg{
+ padding:12px 14px;margin-bottom:12px;border-radius:14px;
+ max-width:90%;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55
 }
-
-.settings input {
-    flex: 1;
-    min-width: 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    outline: none;
+.user{background:#4f46e5;color:white;margin-left:auto}
+.bot{background:white;border:1px solid #ddd;color:#222;margin-right:auto}
+.welcome{text-align:center;margin-top:65px;color:#555}
+.welcome h2{color:#4f46e5;margin-bottom:10px}
+#status{text-align:center;padding:6px;font-size:12px;color:#666}
+.bottom{display:flex;padding:12px;gap:8px;border-top:1px solid #ddd}
+.bottom input{
+ flex:1;min-width:0;padding:13px;border:1px solid #ccc;border-radius:12px;font-size:15px
 }
-
-.settings button {
-    border: none;
-    background: #4338ca;
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
+.bottom button{
+ background:#4f46e5;color:white;border:0;border-radius:12px;padding:0 18px;cursor:pointer
 }
-
-#chat {
-    flex: 1;
-    overflow-y: auto;
-    padding: 18px;
-    background: #f9fafb;
-}
-
-.message {
-    padding: 12px 15px;
-    border-radius: 14px;
-    margin-bottom: 15px;
-    max-width: 85%;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-
-.user {
-    background: #4338ca;
-    color: white;
-    margin-left: auto;
-    border-bottom-right-radius: 3px;
-}
-
-.bot {
-    background: white;
-    color: #222;
-    border: 1px solid #e5e7eb;
-    margin-right: auto;
-    border-bottom-left-radius: 3px;
-}
-
-.welcome {
-    text-align: center;
-    margin-top: 65px;
-    color: #555;
-}
-
-.welcome h2 {
-    color: #4338ca;
-    margin-bottom: 10px;
-}
-
-.input-area {
-    padding: 15px;
-    display: flex;
-    gap: 10px;
-    border-top: 1px solid #eee;
-}
-
-#userInput {
-    flex: 1;
-    min-width: 0;
-    padding: 14px;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    outline: none;
-    font-size: 15px;
-}
-
-#sendBtn {
-    background: #4338ca;
-    color: white;
-    border: none;
-    padding: 0 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#sendBtn:disabled {
-    opacity: .5;
-    cursor: not-allowed;
-}
-
-.status {
-    text-align: center;
-    font-size: 12px;
-    padding: 5px;
-    color: #666;
-    background: #fff;
-}
+button:disabled{opacity:.5}
 </style>
 </head>
 
 <body>
-
 <div class="app">
 
 <header>
-    <div>
-        <h2>🤖 My AI Assistant</h2>
-        <p>Powered by Groq AI</p>
-    </div>
-    <button class="clear" onclick="clearChat()">Clear Chat</button>
+ <div>
+  <h2>🤖 AI Assistant</h2>
+  <small>Powered by Groq • GPT-OSS</small>
+ </div>
+ <button id="clear" onclick="clearChat()">Clear</button>
 </header>
 
-<div class="settings">
-    <input type="password" id="apiKey"
-    placeholder="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
-    <button onclick="toggleKey()">Show</button>
+<div class="keybox">
+ <input id="apiKey" type="password" placeholder="Enter Groq API Key (gsk_...)">
+ <button onclick="showKey()">Show</button>
 </div>
 
 <div id="chat">
-    <div class="welcome" id="welcome">
-        <h2>👋 Hello! I'm your AI Assistant</h2>
-        <p>Ask me anything. I am ready to help you!</p>
-    </div>
+ <div class="welcome" id="welcome">
+  <h2>Welcome to AI Assistant 👋</h2>
+  <p>Ask me anything!</p>
+ </div>
 </div>
 
-<div class="status" id="status">🟢 Ready to chat</div>
+<div id="status">Ready</div>
 
-<div class="input-area">
-    <input id="userInput"
-    type="text"
-    placeholder="Message your AI Assistant..."
-    autocomplete="off">
-
-    <button id="sendBtn" onclick="sendMessage()">Send ➤</button>
+<div class="bottom">
+ <input id="input" placeholder="Write your message..." autocomplete="off">
+ <button id="send" onclick="sendMessage()">Send ➤</button>
 </div>
 
 </div>
 
 <script>
-const MODEL = "llama-3.3-70b-versatile";
+const MODEL = "openai/gpt-oss-20b";
+const API = "https://api.groq.com/openai/v1/chat/completions";
 
-const API_URL =
-"https://api.groq.com/openai/v1/chat/completions";
-
-let messages = [
-    {
-        role: "system",
-        content: "You are a friendly and intelligent AI assistant. Answer questions helpfully. Reply in the language used by the user."
-    }
-];
+let history = [{
+ role:"system",
+ content:"You are a helpful, intelligent AI assistant. Answer clearly and accurately. Speak Hindi, English or Hinglish according to the user's language."
+}];
 
 const chat = document.getElementById("chat");
-const input = document.getElementById("userInput");
-const statusText = document.getElementById("status");
-const sendBtn = document.getElementById("sendBtn");
+const input = document.getElementById("input");
+const statusEl = document.getElementById("status");
+const sendBtn = document.getElementById("send");
 
-function toggleKey() {
-    const key = document.getElementById("apiKey");
-    key.type = key.type === "password" ? "text" : "password";
+function showKey(){
+ const k=document.getElementById("
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenAI AI Assistant</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{
+ background:linear-gradient(135deg,#0f172a,#4338ca,#7c3aed);
+ height:100vh;display:flex;align-items:center;justify-content:center;padding:12px
+}
+.app{
+ width:100%;max-width:700px;height:95vh;background:#fff;
+ border-radius:20px;display:flex;flex-direction:column;overflow:hidden;
+ box-shadow:0 15px 50px #0005
+}
+header{
+ background:#171717;color:white;padding:18px;
+ display:flex;justify-content:space-between;align-items:center
+}
+header h2{font-size:21px}
+header small{color:#aaa}
+#clear{
+ background:#333;color:white;border:0;padding:10px;border-radius:8px;cursor:pointer
+}
+.keybox{padding:12px;background:#f2f2f2;display:flex;gap:7px}
+.keybox input{
+ flex:1;min-width:0;padding:11px;border:1px solid #ccc;border-radius:8px
+}
+.keybox button{
+ border:0;background:#444;color:white;padding:10px;border-radius:8px;cursor:pointer
+}
+#chat{
+ flex:1;overflow-y:auto;padding:16px;background:#f8fafc
+}
+.msg{
+ padding:12px 14px;margin-bottom:12px;border-radius:14px;
+ max-width:90%;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55
+}
+.user{background:#4f46e5;color:white;margin-left:auto}
+.bot{background:white;border:1px solid #ddd;color:#222;margin-right:auto}
+.welcome{text-align:center;margin-top:65px;color:#555}
+.welcome h2{color:#4f46e5;margin-bottom:10px}
+#status{text-align:center;padding:6px;font-size:12px;color:#666}
+.bottom{display:flex;padding:12px;gap:8px;border-top:1px solid #ddd}
+.bottom input{
+ flex:1;min-width:0;padding:13px;border:1px solid #ccc;border-radius:12px;font-size:15px
+}
+.bottom button{
+ background:#4f46e5;color:white;border:0;border-radius:12px;padding:0 18px;cursor:pointer
+}
+button:disabled{opacity:.5}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+ <div>
+  <h2>🤖 AI Assistant</h2>
+  <small>Powered by Groq • GPT-OSS</small>
+ </div>
+ <button id="clear" onclick="clearChat()">Clear</button>
+</header>
+
+<div class="keybox">
+ <input id="apiKey" type="password" placeholder="Enter Groq API Key (gsk_...)">
+ <button onclick="showKey()">Show</button>
+</div>
+
+<div id="chat">
+ <div class="welcome" id="welcome">
+  <h2>Welcome to AI Assistant 👋</h2>
+  <p>Ask me anything!</p>
+ </div>
+</div>
+
+<div id="status">Ready</div>
+
+<div class="bottom">
+ <input id="input" placeholder="Write your message..." autocomplete="off">
+ <button id="send" onclick="sendMessage()">Send ➤</button>
+</div>
+
+</div>
+
+<script>
+const MODEL = "openai/gpt-oss-20b";
+const API = "https://api.groq.com/openai/v1/chat/completions";
+
+let history = [{
+ role:"system",
+ content:"You are a helpful, intelligent AI assistant. Answer clearly and accurately. Speak Hindi, English or Hinglish according to the user's language."
+}];
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+const statusEl = document.getElementById("status");
+const sendBtn = document.getElementById("send");
+
+function showKey(){
+ const k=document.getElementById("apiKey");
+ k.type=k.type==="password"?"text":"password";
 }
 
-function addMessage(text, type) {
-    document.getElementById("welcome")?.remove();
-
-    const div = document.createElement("div");
-    div.className = "message " + type;
-    div.textContent = text;
-
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-
-    return div;
+function addMsg(text,role){
+ document.getElementById("welcome")?.remove();
+ const d=document.createElement("div");
+ d.className="msg "+role;
+ d.textContent=text;
+ chat.appendChild(d);
+ chat.scrollTop=chat.scrollHeight;
+ return d;
 }
 
-async function sendMessage() {
-    const text = input.value.trim();
-    const apiKey = document.getElementById("apiKey").value.trim();
+async function sendMessage(){
+ const text=input.value.trim();
+ const key=document.getElementById("apiKey").value.trim();
 
-    if (!text) return;
+ if(!text)return;
+ if(!key){
+  alert("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!");
+  return;
+ }
 
-    if (!apiKey) {
-        alert("Please enter your Groq API Key!");
-        return;
-    }
+ addMsg(text,"user");
+ input.value="";
+ history.push({role:"user",content:text});
 
-    addMessage(text, "user");
-    input.value = "";
+ sendBtn.disabled=true;
+ statusEl.textContent="AI is thinking...";
 
-    messages.push({
-        role: "user",
-        content: text
-    });
+ const loading=addMsg("Thinking...","bot");
 
-    sendBtn.disabled = true;
-    statusText.textContent = "⌛ AI is thinking...";
+ try{
+  const response=await fetch(API,{
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json",
+    "Authorization":"Bearer "+key
+   },
+   body:JSON.stringify({
+    model:MODEL,
+    messages:history,
+    temperature:0.7,
+    max_completion_tokens:2048
+   })
+  });
 
-    const loading = addMessage("Thinking...", "bot");
+  const result=await response.json();
 
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + apiKey
-            },
-            body: JSON.stringify({
-                model: MODEL,
-                messages: messages,
-                temperature: 0.7,
-                max_completion_tokens: 2048
-            })
-        });
+  if(!response.ok){
+   throw new Error(result.error?.message || "API error");
+  }
 
-        const data = await response.json();
+  const answer=result.choices?.[0]?.message?.content;
 
-        if (!response.ok) {
-            throw new Error(
-                data.error?.message || "API request failed"
-            );
-        }
+  if(!answer)throw new Error("Empty response");
 
-        const answer =
-            data.choices?.[0]?.message?.content;
+  loading.textContent=answer;
+  history.push({role:"assistant",content:answer});
+  statusEl.textContent="Ready 🟢";
 
-        if (!answer) {
-            throw new Error("No response received from AI.");
-        }
-
-        loading.textContent = answer;
-
-        messages.push({
-            role: "assistant",
-            content: answer
-        });
-
-        statusText.textContent = "🟢 Ready to chat";
-
-    } catch (error) {
-        loading.textContent = "❌ Error: " + error.message;
-
-        messages.pop();
-
-        statusText.textContent = "🔴 Something went wrong";
-
-    } finally {
-        sendBtn.disabled = false;
-        input.focus();
-        chat.scrollTop = chat.scrollHeight;
-    }
+ }catch(err){
+  loading.textContent="Error: "+err.message;
+  history.pop();
+  statusEl.textContent="Error 🔴";
+ }finally{
+  sendBtn.disabled=false;
+  input.focus();
+  chat.scrollTop=chat.scrollHeight;
+ }
 }
 
-function clearChat() {
-    messages = [
-        {
-            role: "system",
-            content: "You are a friendly and intelligent AI assistant. Answer questions helpfully. Reply in the language used by the user."
-        }
-    ];
+function clearChat(){
+ history=[{
+  role:"system",
+  content:"You are a helpful, intelligent AI assistant. Answer clearly and accurately. Speak Hindi, English or Hinglish according to the user's language."
+ }];
 
-    chat.innerHTML = `
-        <div class="welcome" id="welcome">
-            <h2>👋 Hello! I'm your AI Assistant</h2>
-            <p>Ask me anything. I am ready to help you!</p>
-        </div>
-    `;
+ chat.innerHTML=`
+ <div class="welcome" id="welcome">
+ <h2>Welcome to AI Assistant 👋</h2>
+ <p>Ask me anything!</p>
+ </div>`;
 
-    statusText.textContent = "🟢 Chat cleared";
+ statusEl.textContent="Chat cleared";
 }
 
-input.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        sendMessage();
-    }
+input.addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendMessage();
 });
 </script>
+</body>
+</html>
+);
+ k.type=k.type==="password"?"text":"password";
+}
 
+function addMsg(text,role){
+ document.getElementById("welcome")?.remove();
+ const d=document.createElement("div");
+ d.className="msg "+role;
+ d.textContent=text;
+ chat.appendChild(d);
+ chat.scrollTop=chat.scrollHeight;
+ return d;
+}
+
+async function sendMessage(){
+ const text=input.value.trim();
+ const key=document.getElementById("apiKey").value.trim();
+
+ if(!text)return;
+ if(!key){
+  alert("Please enter your Groq API key first!");
+  return;
+ }
+
+ addMsg(text,"user");
+ input.value="";
+ history.push({role:"user",content:text});
+
+ sendBtn.disabled=true;
+ statusEl.textContent="AI is thinking...";
+
+ const loading=addMsg("Thinking...","bot");
+
+ try{
+  const response=await fetch(API,{
+   method:"POST",
+   headers:{
+    "Content-Type":"application/json",
+    "Authorization":"Bearer "+key
+   },
+   body:JSON.stringify({
+    model:MODEL,
+    messages:history,
+    temperature:0.7,
+    max_completion_tokens:2048
+   })
+  });
+
+  const result=await response.json();
+
+  if(!response.ok){
+   throw new Error(result.error?.message || "API error");
+  }
+
+  const answer=result.choices?.[0]?.message?.content;
+
+  if(!answer)throw new Error("Empty response");
+
+  loading.textContent=answer;
+  history.push({role:"assistant",content:answer});
+  statusEl.textContent="Ready 🟢";
+
+ }catch(err){
+  loading.textContent="Error: "+err.message;
+  history.pop();
+  statusEl.textContent="Error 🔴";
+ }finally{
+  sendBtn.disabled=false;
+  input.focus();
+  chat.scrollTop=chat.scrollHeight;
+ }
+}
+
+function clearChat(){
+ history=[{
+  role:"system",
+  content:"You are a helpful, intelligent AI assistant. Answer clearly and accurately. Speak Hindi, English or Hinglish according to the user's language."
+ }];
+
+ chat.innerHTML=`
+ <div class="welcome" id="welcome">
+ <h2>Welcome to AI Assistant 👋</h2>
+ <p>Ask me anything!</p>
+ </div>`;
+
+ statusEl.textContent="Chat cleared";
+}
+
+input.addEventListener("keydown",e=>{
+ if(e.key==="Enter")sendMessage();
+});
+</script>
 </body>
 </html>
